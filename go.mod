@@ -8,7 +8,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/improbable-eng/grpc-web v0.13.0
-	github.com/nats-io/nats-server/v2 v2.1.9
 	github.com/nats-io/nats.go v1.10.0
 	github.com/pion/ion-avp v1.8.2
 	github.com/pion/ion-log v1.0.1
@@ -22,6 +21,6 @@ require (
 	github.com/tj/assert v0.0.3
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4 // indirect
-	google.golang.org/grpc v1.35.0
+	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.25.0
 )
