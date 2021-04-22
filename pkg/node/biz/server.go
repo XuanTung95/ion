@@ -134,6 +134,7 @@ func (s *BizServer) Signal(stream biz.Biz_SignalServer) error {
 
 	go func() {
 		for {
+			// get the signal request from client
 			req, err := stream.Recv()
 			if err != nil {
 				log.Errorf("BizServer.Singal server stream.Recv() err: %v", err)
@@ -147,6 +148,7 @@ func (s *BizServer) Signal(stream biz.Biz_SignalServer) error {
 	for {
 		select {
 		case err := <-errCh:
+			// Error occur -> close loop
 			return err
 		case reply, ok := <-repCh:
 			if !ok {
@@ -185,15 +187,18 @@ func (s *BizServer) Signal(stream biz.Biz_SignalServer) error {
 					r = s.getRoom(sid)
 					if r == nil {
 						reason = fmt.Sprintf("room sid = %v not found", sid)
+						// Ask ISLB process to get SFU node
 						resp, err := s.islbcli.FindNode(context.TODO(), &islb.FindNodeRequest{
 							Service: proto.ServiceSFU,
 							Sid:     sid,
 						})
 						nid := ""
 						if err == nil && len(resp.Nodes) > 0 {
+							// Found SFU node -> create room
 							nid = resp.GetNodes()[0].Nid
 							r = s.createRoom(sid, nid)
 						} else {
+							// Not found SFU node -> SFU server is down, err maybe EOF
 							reason = fmt.Sprintf("islbcli.FindNode(serivce = sfu, sid = %v) err %v", sid, err)
 						}
 
@@ -203,10 +208,13 @@ func (s *BizServer) Signal(stream biz.Biz_SignalServer) error {
 						}
 					}
 					if r != nil {
+						// get or created room -> create Peer
 						peer = NewPeer(sid, uid, payload.Join.Peer.Info, repCh)
 						r.addPeer(peer)
 						success = true
 						reason = "join success."
+					} else {
+						log.Errorf("Room not found or failed to create sid = %v", sid)
 					}
 				} else {
 					reason = fmt.Sprintf("join [sid=%v] islb node not found", sid)

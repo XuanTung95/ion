@@ -37,7 +37,7 @@ func DefaultWrapperedServerOptions() WrapperedServerOptions {
 		AllowedHeaders:        &[]string{},
 		AllowedOrigins:        &[]string{},
 		UseWebSocket:          true,
-		WebsocketPingInterval: 0,
+		WebsocketPingInterval: 20 * time.Second,
 	}
 }
 
