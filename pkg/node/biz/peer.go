@@ -14,6 +14,7 @@ type Peer struct {
 	lastStreamEvent *ion.StreamEvent
 	closed          util.AtomicBool
 	sndCh           chan *biz.SignalReply
+	peerInfo        *PeerInfo
 }
 
 func NewPeer(sid string, uid string, info []byte, senCh chan *biz.SignalReply) *Peer {
@@ -22,6 +23,7 @@ func NewPeer(sid string, uid string, info []byte, senCh chan *biz.SignalReply) *
 		sid:   sid,
 		info:  info,
 		sndCh: senCh,
+		peerInfo: NewPeerInfo(),
 	}
 	p.closed.Set(false)
 	return p

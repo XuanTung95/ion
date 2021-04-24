@@ -213,6 +213,9 @@ func (s *BizServer) Signal(stream biz.Biz_SignalServer) error {
 						r.addPeer(peer)
 						success = true
 						reason = "join success."
+						// TODO: Test
+						r.roomInfo.Host = peer
+						r.roomInfo.Partners = append(r.roomInfo.Partners, peer)
 					} else {
 						log.Errorf("Room not found or failed to create sid = %v", sid)
 					}
@@ -259,6 +262,7 @@ func (s *BizServer) Signal(stream biz.Biz_SignalServer) error {
 				log.Debugf("Message: from: %v => to: %v, data: %v", payload.Msg.From, payload.Msg.To, payload.Msg.Data)
 				// message broadcast
 				if r != nil {
+					r.roomInfo.ChatHistory.addMessage(NewRoomMessage(payload.Msg, peer))
 					r.sendMessage(payload.Msg)
 				} else {
 					log.Warnf("room not found, maybe the peer did not join")

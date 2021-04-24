@@ -13,6 +13,7 @@ type Room struct {
 	sid    string
 	sfunid string
 	peers  map[string]*Peer
+	roomInfo *RoomInfo
 }
 
 // newRoom creates a new room instance
@@ -21,6 +22,7 @@ func newRoom(sid string, sfunid string) *Room {
 		sid:    sid,
 		sfunid: sfunid,
 		peers:  make(map[string]*Peer),
+		roomInfo: NewRoomInfo(),
 	}
 	return r
 }

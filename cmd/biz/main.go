@@ -118,8 +118,11 @@ func main() {
 	}
 	s.GRPCServer.RegisterService(&pb.SFU_ServiceDesc, sfusig)
 
-	// Start Information server
-	node.Service().StartInfoServer()
+	// Info server to provide info by rest api
+	infoServer := &biz.InfoServer{
+		Biz: node,
+	}
+	infoServer.StartServer()
 
 	if err := s.Serve(); err != nil {
 		log.Panicf("failed to serve: %v", err)
