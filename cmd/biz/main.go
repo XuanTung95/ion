@@ -77,6 +77,7 @@ func parse() bool {
 }
 
 func main() {
+	// read config file
 	if !parse() {
 		showHelp()
 		os.Exit(-1)
@@ -102,6 +103,7 @@ func main() {
 
 	s := server.NewWrapperedGRPCWebServer(options)
 
+	// crete BIZ server
 	node := biz.NewBIZ("biz01")
 	if err := node.Start(conf); err != nil {
 		log.Errorf("biz init start: %v", err)
@@ -115,6 +117,9 @@ func main() {
 		BizServer: node.Service(),
 	}
 	s.GRPCServer.RegisterService(&pb.SFU_ServiceDesc, sfusig)
+
+	// Start Information server
+	node.Service().StartInfoServer()
 
 	if err := s.Serve(); err != nil {
 		log.Panicf("failed to serve: %v", err)
