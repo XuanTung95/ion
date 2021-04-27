@@ -34,7 +34,6 @@ func (p *Peer) Close() {
 	if p.closed.Get() {
 		return
 	}
-	p.sndCh = nil
 	p.closed.Set(true)
 }
 
@@ -50,9 +49,7 @@ func (p *Peer) SID() string {
 
 func (p *Peer) send(data *biz.SignalReply) error {
 	go func() {
-		if p.sndCh != nil {
-			p.sndCh <- data
-		}
+		p.sndCh <- data
 	}()
 	return nil
 }
